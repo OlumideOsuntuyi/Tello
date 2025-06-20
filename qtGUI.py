@@ -21,6 +21,7 @@ class TelloGUI(QMainWindow):
         self.timer.start(30)
 
         self.battery = 0
+        self.form.screenshotButton.clicked.connect(self.screenshot_camera)
         self.form.endFlight.clicked.connect(self.land)
         self.form.takeOff.clicked.connect(self.takeoff)
 
@@ -33,6 +34,9 @@ class TelloGUI(QMainWindow):
 
     def set_frame(self):
         widget = self.form.frameDisplay
+
+    def screenshot_camera(self):
+        print('screenshotted!')
 
     def land(self):
         self.form.takeOff.setText(f'Take Off')

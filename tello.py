@@ -100,6 +100,10 @@ class TelloController:
         self.isTakeoff = False
         self.sensitivity = 1.0
 
+        self.distX = 0.0
+        self.distY = 0.0
+        self.distZ = 0.0
+
         #self.video_thread = threading.Thread(target=self.video_loop)
         #self.video_thread.daemon = True
         #self.video_thread.start()

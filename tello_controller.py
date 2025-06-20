@@ -17,21 +17,24 @@ import cv2
 # P - SCREENSHOT
 
 tello = Tello()
+tello.connect()
 
+tello.send_command_with_return("streamon")
 tello.streamon()
 time.sleep(2) # sleep for a while whilst tello gets frame reader
 
 frame_reader = tello.get_frame_read()
+last_frame = None
 
 
 def get_keys(a, b):
-    elevation = 0
+    value = 0
     if keyboard.is_pressed(a):
-        elevation -= 1
+        value -= 1
     if keyboard.is_pressed(b):
-        elevation += 1
+        value += 1
 
-    return elevation
+    return value
 
 def isPressed(key):
     return keyboard.is_pressed(key)
@@ -62,7 +65,7 @@ def screenshot_camera():
     full_path.parent.mkdir(parents=True, exist_ok=True)
 
     frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    frame = cv2.resize(frame2, (1280, 720))
+    frame = cv2.resize(frame2, (800, 400))
 
     success = cv2.imwrite(str(full_path), frame)
 
@@ -79,6 +82,12 @@ running = True
 in_flight = False
 
 while running:
+    frame = frame_reader.frame
+    frame = cv2.resize(frame, (600, 400))
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    cv2.imshow('Tello Feed', frame)
+    cv2.waitKey(1)
+
     if not running: break
     if not in_flight:
         if isPressed('t'):

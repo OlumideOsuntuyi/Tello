@@ -250,6 +250,28 @@
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="totalDistance_2">
+        <property name="font">
+         <font>
+          <family>Comic Sans MS</family>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">padding: 5px 10px 5px 10px;</string>
+        </property>
+        <property name="text">
+         <string>Log: ...</string>
+        </property>
+        <property name="margin">
+         <number>2</number>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <property name="spacing">
          <number>10</number>
@@ -258,7 +280,7 @@
          <number>5</number>
         </property>
         <property name="topMargin">
-         <number>35</number>
+         <number>20</number>
         </property>
         <property name="rightMargin">
          <number>5</number>

@@ -31,9 +31,9 @@ class TelloGUI(QMainWindow):
         self.timer.start(16)
 
         self.last_frame = None
-        #self.form.screenshotButton.clicked.connect(self.screenshot_camera())
-        self.form.takeOff.clicked.connect(self.screenshot_camera)
-        #self.form.endFlight.clicked.connect(self.land)
+        self.form.screenshotButton.clicked.connect(self.screenshot_camera)
+        self.form.takeOff.clicked.connect(self.takeoff)
+        self.form.endFlight.clicked.connect(self.land)
 
     def update_gui(self):
         self.set_frame()
