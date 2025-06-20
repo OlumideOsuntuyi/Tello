@@ -118,7 +118,7 @@
       <height>251</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QVBoxLayout" name="videoLayout">
      <item>
       <widget class="QCheckBox" name="checkBox">
        <property name="font">
@@ -146,14 +146,14 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="screenshotButton">
        <property name="text">
         <string>Take Screenshot</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="recordVideoButton">
        <property name="text">
         <string>Record Video</string>
        </property>
@@ -347,7 +347,7 @@ color: #ffffff;</string>
      <x>0</x>
      <y>0</y>
      <width>802</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTello_Controller">
