@@ -1,0 +1,11 @@
+PAGE
+    Toplevel: Toplevel 0
+        Menubar
+        Canvas: Canvas1  
+        TSeparator: TSeparator1  
+        Label: Label1  locked
+        TProgressbar: battery_progress_bar  
+        Button: Button1  
+        TLabel: battery_label  
+        Label: Label2  locked
+
