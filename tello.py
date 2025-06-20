@@ -27,7 +27,11 @@ def set_style_param(widget, param: str, value: str):
 
 def set_frame_to_label(frame, label):
     # Convert OpenCV BGR to RGB
+    frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    frame = cv2.resize(frame2, (371, 251))
+
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
     h, w, ch = rgb.shape
     bytes_per_line = ch * w
 
@@ -82,6 +86,9 @@ class TelloController:
         self.tello = Tello()
         self.tello.connect()
         self.tello.streamon()
+        self.tello.send_command_with_return("streamon")
+        time.sleep(2)
+
         self.frame_read = self.tello.get_frame_read()
 
         self.right = 0.0
@@ -116,13 +123,6 @@ class TelloController:
 
     def get_speed(self):
         return self.tello.get_speed_x(), self.tello.get_speed_y(), self.tello.get_speed_z()
-
-    def video_loop(self):
-        time.sleep(2)
-
-        while self.running:
-            frame = self.frame_read.frame
-            cv2.imshow("Tello Feed", frame)
 
     def quit(self):
         self.running = False
