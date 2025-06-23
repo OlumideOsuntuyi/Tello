@@ -28,7 +28,7 @@ def set_style_param(widget, param: str, value: str):
 def set_frame_to_label(frame, label):
     # Convert OpenCV BGR to RGB
     frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    frame = cv2.resize(frame2, (371, 251))
+    frame = cv2.resize(frame2, (853, 480))
 
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 

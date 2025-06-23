@@ -1,14 +1,18 @@
-from datetime import datetime
+import threading
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import cv2
-from PyQt6.QtCore import QTimer, pyqtSignal
 
+from PyQt6.QtCore import QTimer, pyqtSignal
 from tello import TelloController, isPressed, set_style_param, APP_COLORS, set_frame_to_label
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton
+from models.object_recognition import recognize_objects, speech
+from ultralytics import YOLO
 
 Form, Window = uic.loadUiType("tello.ui")
+yolo_model = YOLO('yolov8n.pt')
 
 def start_video_writer(frame_shape, relative_path: str, fps=30):
     """Initialize cv2.VideoWriter"""
@@ -20,6 +24,7 @@ def start_video_writer(frame_shape, relative_path: str, fps=30):
     writer = cv2.VideoWriter(str(full_path), fourcc, fps, (width, height))
     return writer
 
+
 class TelloGUI(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -28,12 +33,20 @@ class TelloGUI(QMainWindow):
         self.form.setupUi(self)
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_gui)
-        self.timer.start(16)
+        self.timer.start(50)
 
         self.last_frame = None
         self.form.screenshotButton.clicked.connect(self.screenshot_camera)
         self.form.takeOff.clicked.connect(self.takeoff)
         self.form.endFlight.clicked.connect(self.land)
+
+        self.detected_labels = []
+        self.speech_text = ''
+        self.last_detection_time = datetime.now()
+
+        self.thread = threading.Thread(target=self.run_speech, daemon=True)
+        self.thread.start()
+
 
     def update_gui(self):
         self.set_frame()
@@ -51,7 +64,7 @@ class TelloGUI(QMainWindow):
 
 
     def update_controls(self):
-        if self.controller.running: return
+        if not self.controller.running: return
 
         speed = 200
         elevation_speed = 100
@@ -87,11 +100,31 @@ class TelloGUI(QMainWindow):
         if not success:
             raise print(f"Failed to save image to {full_path}")
 
+    def run_speech(self):
+        while self.controller.running:
+            if len(self.speech_text) > 0:
+                speech(self.speech_text)
 
 
     def set_frame(self):
         widget = self.form.frameDisplay
-        frame = self.controller.frame_read.frame
+        frame, yolo_labels = recognize_objects(self.controller.frame_read.frame, yolo_model, self.detected_labels)
+
+        found_label = False
+        new_objects = ''
+        for label in yolo_labels:
+            if label not in self.detected_labels:
+                found_label = True
+                new_objects += f'Found {label}, '
+                self.detected_labels.append(label)
+
+        if found_label:
+            dT = datetime.now() - self.last_detection_time
+            if dT > timedelta(seconds=10): #seconds
+                self.speech_text = new_objects
+                self.last_detection_time = datetime.now()
+
+        # cache frame
         self.last_frame = frame
         set_frame_to_label(frame, widget)
 
@@ -136,8 +169,7 @@ def land_drone(controller:TelloController):
 app = QApplication([])
 window = TelloGUI()
 
-#thread = threading.Thread(target=update_loop(window), daemon=True)
-#thread.start()
-
 window.show()
 app.exec()
+
+cv2.destroyAllWindows()
